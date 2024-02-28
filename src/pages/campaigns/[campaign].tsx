@@ -138,7 +138,7 @@ const Campaign = () => {
             from: account
           });
         setShowRequestModal(false);
-        setShowDonationModal(false);
+        setIsCreateRequestLoading(false);
         toast.success('Request creation successful.');
       } catch (error) {
         toast.error('Request creation failed. Please try again.');
