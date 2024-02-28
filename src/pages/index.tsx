@@ -154,7 +154,6 @@ const Index = () => {
         setShowCreateModal(false);
       } catch (error) {
         toast.error('Fundraiser creation failed. Please try again.');
-      } finally {
       }
       setIsCreateLoading(false);
     }

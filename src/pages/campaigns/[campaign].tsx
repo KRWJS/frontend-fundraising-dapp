@@ -7,10 +7,12 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import web3 from 'web3';
 import { useMetaMask } from 'metamask-react';
+import { isAddress } from 'web3-validator';
 
 // Hooks
 import { useCampaign } from '@/UI/hooks/useCampaign';
 import { useEtherBalance } from '@/UI/hooks/useBalance';
+import { useNetworkCheck } from '@/UI/hooks/useNetworkCheck';
 
 // Utils
 import { shortAddress } from '@/UI/utils/address';
@@ -27,6 +29,9 @@ import IconBalance from '@/UI/components/Icons/IconBalance';
 import IconMinimumDonation from '@/UI/components/Icons/IconMinimumDonation';
 import IconRequests from '@/UI/components/Icons/IconRequests';
 import IconContributors from '@/UI/components/Icons/IconContributors';
+import IconArrowLeft from '@/UI/components/Icons/IconArrowLeft';
+import Loader from '@/UI/components/Loader/Loader';
+import IconWarning from '@/UI/components/Icons/IconWarning';
 
 const Modal = dynamic(() => import('@/UI/components/Modal/Modal'), {
   ssr: false
@@ -36,7 +41,6 @@ const Modal = dynamic(() => import('@/UI/components/Modal/Modal'), {
 import Main from '@/UI/layouts/Main/Main';
 import Container from '@/UI/layouts/Container/Container';
 import Flex from '@/UI/layouts/Flex/Flex';
-import IconArrowLeft from '@/UI/components/Icons/IconArrowLeft';
 
 interface CampaignSummary {
   minimumContribution: BN;
@@ -50,6 +54,7 @@ const Campaign = () => {
   const router = useRouter();
   const { account } = useMetaMask();
   const { balanceEther } = useEtherBalance();
+  const { isCorrectNetwork, switchToSepolia, isSwitching } = useNetworkCheck();
 
   const campaignId =
     typeof router.query.campaign === 'string' ? router.query.campaign : '';
@@ -90,9 +95,11 @@ const Campaign = () => {
   // HANDLE DONATIONS
   const [showDonationModal, setShowDonationModal] = useState(false);
   const [donation, setDonation] = useState<string>('');
+  const [isDonateLoading, setIsDonateLoading] = useState<boolean>(false);
 
   const handleDonation = async () => {
     if (account) {
+      setIsDonateLoading(true);
       try {
         await campaign.methods.contribute().send({
           from: account,
@@ -100,10 +107,12 @@ const Campaign = () => {
           value: web3.utils.toWei(donation, 'ether')
         });
         toast.success('Donation successful.');
-        router.reload();
+        setIsDonateLoading(false);
+        setShowDonationModal(false);
       } catch (error) {
         toast.error('Donation failed. Please try again.');
       }
+      setIsDonateLoading(false);
     }
   };
 
@@ -112,10 +121,13 @@ const Campaign = () => {
   const [amount, setAmount] = useState<string>('');
   const [recipient, setRecipient] = useState<string>('');
   const [showRequestModal, setShowRequestModal] = useState(false);
+  const [isCreateRequestLoading, setIsCreateRequestLoading] =
+    useState<boolean>(false);
 
   const handleCreateRequest = async () => {
     if (account) {
       try {
+        setIsCreateRequestLoading(true);
         await campaign.methods
           .createRequest(
             description,
@@ -125,10 +137,13 @@ const Campaign = () => {
           .send({
             from: account
           });
-        router.reload();
+        setShowRequestModal(false);
+        setShowDonationModal(false);
+        toast.success('Request creation successful.');
       } catch (error) {
         toast.error('Request creation failed. Please try again.');
       }
+      setIsCreateRequestLoading(false);
     }
   };
 
@@ -194,6 +209,190 @@ const Campaign = () => {
     } catch (error) {
       toast.error('Unable to finalize request. Please try again.');
     }
+  };
+
+  const renderRequestButton = () => {
+    if (isSwitching) {
+      return (
+        <Button
+          title='Switching network'
+          disabled
+          className='full-width'
+          variant='warning'
+          size='lg'>
+          <Loader /> Switching in progress
+        </Button>
+      );
+    }
+
+    if (!isCorrectNetwork) {
+      return (
+        <Button
+          title='Click to switch to Sepolia'
+          onClick={switchToSepolia}
+          className='full-width'
+          size='lg'
+          variant='warning'>
+          <IconWarning /> Switch to Sepolia
+        </Button>
+      );
+    }
+
+    if (!amount.trim()) {
+      return (
+        <Button
+          title='Enter an amount'
+          disabled
+          className='full-width'
+          variant='secondary'
+          size='lg'>
+          Enter an amount
+        </Button>
+      );
+    }
+
+    if (new BN(amount).gt(new BN(campaignSummary.balance))) {
+      return (
+        <Button
+          title='Insufficient fundraiser balance'
+          disabled
+          className='full-width'
+          variant='secondary'
+          size='lg'>
+          Insufficient fundraiser balance
+        </Button>
+      );
+    }
+
+    if (!description.trim()) {
+      return (
+        <Button
+          title='Description is required'
+          disabled
+          className='full-width'
+          variant='secondary'
+          size='lg'>
+          Description is required
+        </Button>
+      );
+    }
+
+    if (!recipient.trim() || !isAddress(recipient)) {
+      return (
+        <Button
+          title='Invalid recipient address'
+          disabled
+          className='full-width'
+          variant='secondary'
+          size='lg'>
+          Invalid recipient address
+        </Button>
+      );
+    }
+
+    if (isCreateRequestLoading) {
+      return (
+        <Button
+          title='Transaction Processing'
+          disabled
+          className='full-width'
+          size='lg'>
+          <Loader /> Transaction in progress
+        </Button>
+      );
+    }
+
+    return (
+      <Button
+        title='Click to confirm'
+        onClick={handleCreateRequest}
+        className='full-width'
+        size='lg'>
+        Confirm
+      </Button>
+    );
+  };
+
+  const renderDonationButton = () => {
+    const donationInWei = web3.utils.toWei(donation || '0', 'ether');
+
+    if (isSwitching) {
+      return (
+        <Button
+          title='Switching network'
+          disabled
+          className='full-width'
+          variant='warning'
+          size='lg'>
+          <Loader /> Switching in progress
+        </Button>
+      );
+    }
+
+    if (!isCorrectNetwork) {
+      return (
+        <Button
+          title='Click to switch to Sepolia'
+          onClick={switchToSepolia}
+          className='full-width'
+          size='lg'
+          variant='warning'>
+          <IconWarning /> Switch to Sepolia
+        </Button>
+      );
+    }
+
+    if (
+      new BN(donationInWei).lt(campaignSummary.minimumContribution) ||
+      new BN(donation).lte(0)
+    ) {
+      return (
+        <Button
+          title='Donation amount is less than the minimum contribution'
+          disabled
+          className='full-width'
+          variant='secondary'
+          size='lg'>
+          <IconWarning /> Min. Donation of{' '}
+          {new BN(campaignSummary.minimumContribution).format(0)} WEI
+        </Button>
+      );
+    }
+
+    if (new BN(donation).gt(balanceEther)) {
+      return (
+        <Button
+          title='Insufficient balance'
+          disabled
+          className='full-width'
+          variant='secondary'
+          size='lg'>
+          <IconWarning /> Insufficient Balance
+        </Button>
+      );
+    }
+
+    if (isDonateLoading) {
+      return (
+        <Button
+          title='Transaction Processing'
+          disabled
+          className='full-width'
+          size='lg'>
+          <Loader /> Transaction in progress
+        </Button>
+      );
+    }
+
+    return (
+      <Button
+        title='Click to confirm'
+        onClick={handleDonation}
+        className='full-width'
+        size='lg'>
+        Confirm
+      </Button>
+    );
   };
 
   return (
@@ -325,13 +524,7 @@ const Campaign = () => {
           className='mb-24'
         />
 
-        <Button
-          title='Click to confirm'
-          onClick={handleCreateRequest}
-          className='full-width'
-          size='lg'>
-          Confirm
-        </Button>
+        {renderRequestButton()}
       </Modal>
 
       {/** DONATE MODAL */}
@@ -346,19 +539,13 @@ const Campaign = () => {
           type='number'
           value={donation.toString()}
           onChange={(e) => setDonation(e.target.value)}
-          placeholder='100'
+          placeholder={campaignSummary.minimumContribution.toString()}
           inputAddon='ETH'
           labelAddon={`${balanceEther} ETH`}
           className='mb-24'
         />
 
-        <Button
-          title='Click to confirm'
-          onClick={handleDonation}
-          className='full-width'
-          size='lg'>
-          Confirm
-        </Button>
+        {renderDonationButton()}
       </Modal>
     </>
   );

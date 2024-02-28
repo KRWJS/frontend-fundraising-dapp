@@ -19,7 +19,8 @@
     "react-dom": "^18",
     "react-toastify": "^10.0.4",
     "sass": "^1.71.1",
-    "web3": "^4.5.0"
+    "web3": "^4.5.0",
+    "web3-validator": "^2.0.4"
   },
   "devDependencies": {
     "@types/node": "^20",
