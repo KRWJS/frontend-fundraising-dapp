@@ -1,0 +1,64 @@
+.gap-24 {
+  gap: rem(24);
+}
+
+.mb-32 {
+  margin-bottom: rem(32);
+}
+
+.mb-24 {
+  margin-bottom: rem(24);
+}
+
+.mb-4 {
+  margin-bottom: rem(4);
+}
+
+.mb-8 {
+  margin-bottom: rem(8);
+}
+
+.mt-24 {
+  margin-top: rem(24);
+}
+
+.p-24 {
+  padding: rem(24);
+}
+
+.pb-18 {
+  padding-bottom: rem(18);
+}
+
+.border-bottom {
+  border-bottom: rem(1) solid var(--gray-200);
+}
+
+.btn--secondary {
+  @include font-size('text-sm', 'semibold');
+  border-radius: rem(8);
+  background: var(--white);
+  border: rem(1) solid var(--gray-300);
+  color: var(--gray-700);
+  padding: rem(10) rem(18);
+  height: rem(34);
+  display: inline-flex;
+  appearance: none;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  position: relative;
+  white-space: nowrap;
+  vertical-align: middle;
+  outline: none;
+  gap: rem(8);
+
+  &:hover {
+    background: var(--gray-200);
+    color: var(--gray-700);
+  }
+
+  &[disabled]:hover {
+    background: var(--gray-200);
+  }
+}

@@ -1,0 +1,159 @@
+// Font smoothing
+@mixin font-smoothing($value: antialiased) {
+	@if $value == antialiased {
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	} @else {
+		-webkit-font-smoothing: subpixel-antialiased;
+		-moz-osx-font-smoothing: auto;
+	}
+}
+
+// Convert px to rem
+@function rem($px) {
+	@return ($px / 16) * 1rem;
+}
+
+// Font weights
+$font-weights: (
+	'regular': 400,
+	'medium': 500,
+	'semibold': 600,
+	'bold': 700,
+);
+
+// Font sizes
+$font-sizes: (
+	'display-2xl': (
+		font-size: rem(72),
+		line-height: rem(90),
+	),
+	'display-xl': (
+		font-size: rem(60),
+		line-height: rem(72),
+	),
+	'display-lg': (
+		font-size: rem(48),
+		line-height: rem(60),
+	),
+	'display-md': (
+		font-size: rem(36),
+		line-height: rem(44),
+	),
+	'display-sm': (
+		font-size: rem(30),
+		line-height: rem(38),
+	),
+	'display-xs': (
+		font-size: rem(24),
+		line-height: rem(32),
+	),
+	'text-xl': (
+		font-size: rem(20),
+		line-height: rem(30),
+	),
+	'text-lg': (
+		font-size: rem(18),
+		line-height: rem(28),
+	),
+	'text-md': (
+		font-size: rem(16),
+		line-height: rem(24),
+	),
+	'text-sm': (
+		font-size: rem(14),
+		line-height: rem(20),
+	),
+	'text-xs': (
+		font-size: rem(12),
+		line-height: rem(18),
+	),
+);
+
+// Mixin for font size
+@mixin font-size($scale, $weight) {
+	font-size: map-get(map-get($font-sizes, $scale), font-size);
+	line-height: map-get(map-get($font-sizes, $scale), line-height);
+	font-weight: map-get($font-weights, $weight);
+}
+
+// Spacing pattern
+$spacings: (
+	2: rem(2),
+	4: rem(4),
+	8: rem(8),
+	10: rem(10),
+	12: rem(12),
+	14: rem(14),
+	16: rem(16),
+	20: rem(20),
+	24: rem(24),
+	32: rem(32),
+	40: rem(40),
+	48: rem(48),
+	56: rem(56),
+	60: rem(60),
+	64: rem(64),
+	73: rem(73),
+	80: rem(80),
+	84: rem(84),
+	88: rem(88),
+	96: rem(96),
+	119: rem(119),
+	124: rem(124),
+	128: rem(128),
+	160: rem(160),
+	192: rem(192),
+	224: rem(224),
+	256: rem(256),
+);
+
+// Mixin for spacing
+@mixin spacing($property, $size, $sides: 'all') {
+	@if $sides == 'all' {
+		#{$property}: map-get($spacings, $size);
+	} @else if $sides == 'top+bottom' {
+		#{$property}-top: map-get($spacings, $size);
+		#{$property}-bottom: map-get($spacings, $size);
+	} @else if $sides == 'left+right' {
+		#{$property}-left: map-get($spacings, $size);
+		#{$property}-right: map-get($spacings, $size);
+	} @else if $sides == 'top' {
+		#{$property}-top: map-get($spacings, $size);
+	} @else if $sides == 'bottom' {
+		#{$property}-bottom: map-get($spacings, $size);
+	} @else if $sides == 'left' {
+		#{$property}-left: map-get($spacings, $size);
+	} @else if $sides == 'right' {
+		#{$property}-right: map-get($spacings, $size);
+	} @else {
+		@warn "Invalid value for `$sides`. It should be 'all', 'top', 'bottom', 'left', 'right', 'top+bottom', or 'left+right'.";
+	}
+}
+
+// Breakpoints
+$breakpoints: (
+	mobile: rem(480),
+	tablet: rem(990),
+	desktop: rem(1440),
+);
+
+// Mixin for breakpoints
+@mixin breakpoint($point) {
+	@if map-has-key($breakpoints, $point) {
+		@media (max-width: map-get($breakpoints, $point)) {
+			@content;
+		}
+	} @else {
+		@warn "No breakpoint defined for `#{$point}`.";
+	}
+}
+
+// Container sizes
+$container-sizes: (
+	sm: rem(480),
+	blog: rem(720),
+	md: rem(990),
+	lg: rem(1024),
+	xl: rem(1440),
+);

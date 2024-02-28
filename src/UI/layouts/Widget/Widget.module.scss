@@ -1,0 +1,13 @@
+.widget {
+  background: var(--white);
+  border-radius: rem(12);
+  border: rem(1) solid var(--gray-200);
+  box-shadow: $box_shadow;
+  margin-bottom: rem(32);
+
+  h4 {
+    display: flex;
+    align-items: center;
+    gap: rem(8);
+  }
+}

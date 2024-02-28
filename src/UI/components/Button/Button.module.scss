@@ -1,0 +1,126 @@
+.btn {
+  transition: $transition_all;
+  border-radius: rem(8);
+  display: inline-flex;
+  appearance: none;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  position: relative;
+  white-space: nowrap;
+  vertical-align: middle;
+  outline: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+  gap: rem(8);
+}
+
+// Sizes
+.btn--md {
+  @include font-size('text-sm', 'semibold');
+  padding: rem(10) rem(18);
+  height: rem(34);
+}
+
+.btn--lg {
+  @include font-size('text-md', 'semibold');
+  padding: rem(12) rem(18);
+  height: rem(48);
+  gap: rem(12);
+}
+
+// Variants
+.btn--primary {
+  background: var(--purple-600);
+  color: var(--white);
+
+  &:hover {
+    background: var(--purple-700);
+  }
+
+  &[disabled]:hover {
+    background: var(--purple-600);
+  }
+}
+
+.btn--secondary {
+  background: var(--white);
+  border: rem(1) solid var(--gray-300);
+  color: var(--gray-700);
+
+  &:hover {
+    background: var(--gray-200);
+  }
+
+  &[disabled],
+  &[disabled]:hover {
+    background: var(--gray-300);
+  }
+}
+
+.btn--warning {
+  background: var(--red-500);
+  color: var(--white);
+
+  &:hover {
+    background: var(--red-600);
+  }
+
+  &[disabled]:hover {
+    background: var(--red-500);
+  }
+}
+
+.btn--approve {
+  background: var(--green-500);
+  color: var(--white);
+
+  &:hover {
+    background: var(--green-600);
+  }
+
+  &[disabled]:hover {
+    background: var(--green-500);
+  }
+}
+
+.btn--success {
+  background: var(--green-500);
+  color: var(--white);
+  cursor: default;
+
+  &:hover {
+    background: var(--green-500);
+  }
+
+  &[disabled]:hover {
+    background: var(--green-500);
+  }
+}
+
+.btn--filter {
+  background: var(--white);
+  border: rem(1) solid var(--gray-300);
+  color: var(--gray-700);
+  border-radius: 0;
+  border-left: 0;
+  border-right: 0;
+
+  &:first-child {
+    border-radius: rem(8) 0 0 rem(8);
+    border-left: rem(1) solid var(--gray-300);
+    border-right: rem(1) solid var(--gray-300);
+  }
+
+  &:last-child {
+    border-radius: 0 rem(8) rem(8) 0;
+    border-left: rem(1) solid var(--gray-300);
+    border-right: rem(1) solid var(--gray-300);
+  }
+}
+
+.btn[disabled],
+.btn[disabled]:hover {
+  cursor: not-allowed;
+}

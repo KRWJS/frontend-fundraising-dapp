@@ -1,0 +1,25 @@
+.container {
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 rem(24);
+
+  &.xs {
+    max-width: map-get($container-sizes, xs);
+  }
+
+  &.sm {
+    max-width: map-get($container-sizes, sm);
+  }
+
+  &.md {
+    max-width: map-get($container-sizes, md);
+  }
+
+  &.lg {
+    max-width: map-get($container-sizes, lg);
+  }
+
+  &.xl {
+    max-width: map-get($container-sizes, xl);
+  }
+}

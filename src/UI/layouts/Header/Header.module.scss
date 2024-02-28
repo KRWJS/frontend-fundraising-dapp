@@ -1,0 +1,39 @@
+.header {
+  width: 100%;
+  border-bottom: rem(1) solid var(--gray-200);
+}
+
+.container {
+  padding: rem(16) rem(24);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  max-width: map-get($container-sizes, xl);
+  margin: 0 auto;
+
+  @include breakpoint(tablet) {
+    flex-direction: column;
+    gap: rem(24);
+  }
+}
+
+.left,
+.right {
+  display: flex;
+  align-items: center;
+}
+
+.left {
+  gap: rem(48);
+}
+
+.right {
+  gap: rem(12);
+
+  @include breakpoint(tablet) {
+    button {
+      min-width: auto;
+    }
+  }
+}

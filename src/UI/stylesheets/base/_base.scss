@@ -1,0 +1,33 @@
+html,
+body {
+  height: 100%;
+}
+
+html {
+  @include font-smoothing(antialiased);
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  position: relative;
+}
+
+body.is-active {
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+  @include font-size('text-sm', 'medium');
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.appWrapper {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  position: relative;
+}

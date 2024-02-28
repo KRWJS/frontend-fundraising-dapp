@@ -1,0 +1,31 @@
+// Headings
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  word-break: break-word;
+  word-wrap: break-word;
+  font-weight: normal;
+  margin: 0;
+}
+
+h4 {
+  @include font-size('text-lg', 'semibold');
+  color: var(--gray-900);
+}
+
+p {
+  color: var(--gray-600);
+}
+
+a {
+  transition: $transition_all;
+  color: var(--purple-600);
+
+  &:hover {
+    color: var(--purple-700);
+  }
+}
